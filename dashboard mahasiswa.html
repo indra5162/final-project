@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aproval</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --header-height: 60px;
+     --primary-gradient-start: #763f93;
+      --primary-gradient-end: #9575cd;
+      --card-bg: #fff;
+      --text-color: #000;
+    }
+
+    body.dark-mode {
+      --card-bg: #2e2e2e;
+      --text-color: #fff;
+      background-color: #1c1c1c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f7f7f7;
+      color: var(--text-color);
+    }
+
+    header {
+      height: var(--header-height);
+      background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+      display: flex;
+      align-items: center;
+      padding: 0 25px;
+      color: #fff;
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .back-btn {
+      font-size: 20px;
+      margin-right: 15px;
+      cursor: pointer;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .main-content {
+      padding: 100px 30px 30px;
+    }
+
+    .card-container {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 20px 25px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      width: 300px;
+      transition: transform 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .card:hover {
+      transform: perspective(1000px) rotateY(4deg) rotateX(4deg) scale(1.03);
+    }
+
+    .card img {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .card h4 {
+      font-size: 14px;
+      color: var(--text-color);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: var(--text-color);
+    }
+
+    .card .detail {
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-color);
+    }
+
+    .status {
+      margin-top: 10px;
+      padding: 5px 12px;
+      font-size: 13px;
+      border-radius: 12px;
+      font-weight: bold;
+      display: inline-block;
+      color: #fff;
+    }
+
+    .accepted { background-color: #28a745; }
+    .waiting  { background-color: #f0ad4e; }
+    .rejected { background-color: #dc3545; }
+
+    @media(max-width: 768px) {
+      .main-content {
+        padding: 80px 15px;
+      }
+
+      .card-container {
+        justify-content: center;
+      }
+
+      header {
+        flex-direction: row;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <i class="fas fa-arrow-left back-btn" onclick="history.back()"></i>
+  <div class="header-title">Aproval</div>
+</header>
+
+<div class="main-content">
+  <div class="card-container">
+    <div class="card">
+      <img src="pertamina.jpg" alt="Logo Pertamina">
+      <h4>PT. PERTAMINA HULU ROKAN</h4>
+      <h3>Fullstack Developer</h3>
+      <div class="detail"><i class="fa-solid fa-briefcase"></i> Fullstack Developer</div>
+      <div class="detail"><i class="fa-regular fa-clock"></i> Contract (3 months)</div>
+      <div class="detail"><i class="fa-solid fa-money-bill-wave"></i> IDR 10.000.000 - 30.000.000</div>
+      <div class="detail"><i class="fa-solid fa-users"></i> 2-3 Employees</div>
+      <span class="status accepted">Accepted</span>
+    </div>
+
+    <div class="card">
+      <img src="freeport.jpg" alt="Logo Freeport">
+      <h4>FREEPORT INDONESIA</h4>
+      <h3>Backend Developer</h3>
+      <div class="detail"><i class="fa-solid fa-briefcase"></i> Backend Developer</div>
+      <div class="detail"><i class="fa-regular fa-clock"></i> Contract (3 months)</div>
+      <div class="detail"><i class="fa-solid fa-money-bill-wave"></i> IDR 15.000.000 - 25.000.000</div>
+      <div class="detail"><i class="fa-solid fa-users"></i> 1 Employee</div>
+      <span class="status waiting">Waiting</span>
+    </div>
+
+    <div class="card">
+      <img src="kai.jpg" alt="Logo KAI">
+      <h4>PT Kereta Api Indonesia</h4>
+      <h3>Network Engineer</h3>
+      <div class="detail"><i class="fa-solid fa-briefcase"></i> Network Engineer</div>
+      <div class="detail"><i class="fa-regular fa-clock"></i> Contract (3 months)</div>
+      <div class="detail"><i class="fa-solid fa-money-bill-wave"></i> IDR 5.500.000 - 7.500.000</div>
+      <div class="detail"><i class="fa-solid fa-users"></i> 2-3 Employees</div>
+      <span class="status rejected">Rejected</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+  if (localStorage.getItem("dark") === "on") {
+    document.body.classList.add("dark-mode");
+  }
+</script>
+
+</body>
+</html>

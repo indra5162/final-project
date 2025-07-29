@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pengaturan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-gradient-start: #763f93;
+      --primary-gradient-end: #9575cd;
+      --background: #ffffff;
+      --text: #000000;
+      --card-bg: #f0f0f0;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .settings-header {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+      padding: 15px 20px;
+      gap: 10px;
+      color: white;
+    }
+
+    .settings-header i {
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .settings-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .settings-content {
+      padding: 25px 20px;
+    }
+
+    .setting-item {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .setting-item label {
+      font-weight: bold;
+      flex: 1;
+    }
+
+    .setting-item select {
+      margin-left: 20px;
+      transform: scale(1.05);
+    }
+
+    /* Toggle Switch — FIXED WIDTH */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 20px;
+      min-width: 38px;
+      max-width: 38px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 20px;
+    }
+
+    .slider::before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(16px);
+    }
+
+    /* Dark mode */
+    .dark-mode {
+      --background: #1c1c1c;
+      --text: #ffffff;
+      --card-bg: #2e2e2e;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="settings-header">
+    <i class="fa-solid fa-arrow-left" onclick="window.history.back()"></i>
+    <h2 data-key="title">Pengaturan</h2>
+  </div>
+
+  <div class="settings-content">
+    <div class="setting-item">
+      <label for="language" data-key="language">Bahasa</label>
+      <select id="language">
+        <option value="id" data-key="opt_id">Indonesia</option>
+        <option value="en" data-key="opt_en">English</option>
+      </select>
+    </div>
+
+    <div class="setting-item">
+      <label for="notifToggle" data-key="notif">Notifikasi</label>
+      <label class="switch">
+        <input type="checkbox" id="notifToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item">
+      <label for="darkModeToggle" data-key="dark">Mode Malam</label>
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <script>
+    const i18n = {
+      id: {
+        title: 'Pengaturan',
+        language: 'Bahasa',
+        notif: 'Notifikasi',
+        dark: 'Mode Malam',
+        opt_id: 'Indonesia',
+        opt_en: 'Inggris'
+      },
+      en: {
+        title: 'Settings',
+        language: 'Language',
+        notif: 'Notifications',
+        dark: 'Dark Mode',
+        opt_id: 'Indonesian',
+        opt_en: 'English'
+      }
+    };
+
+    function applyLang(lang) {
+      document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (i18n[lang] && i18n[lang][key]) {
+          el.textContent = i18n[lang][key];
+        }
+      });
+      document.documentElement.lang = lang;
+      localStorage.setItem('lang', lang);
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const lang = localStorage.getItem('lang') || 'id';
+      const notif = localStorage.getItem("notif") === "on";
+      const dark = localStorage.getItem("dark") === "on";
+
+      document.getElementById("language").value = lang;
+      document.getElementById("notifToggle").checked = notif;
+      document.getElementById("darkModeToggle").checked = dark;
+
+      if (dark) document.body.classList.add("dark-mode");
+      applyLang(lang);
+
+      document.getElementById("language").addEventListener("change", function () {
+        applyLang(this.value);
+      });
+
+      document.getElementById("notifToggle").addEventListener("change", function () {
+        localStorage.setItem("notif", this.checked ? "on" : "off");
+      });
+
+      document.getElementById("darkModeToggle").addEventListener("change", function () {
+        localStorage.setItem("dark", this.checked ? "on" : "off");
+        toggleDarkMode();
+      });
+    });
+  </script>
+
+</body>
+</html>

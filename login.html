@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Web Magang</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-image: url('bckgrng.JPG');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 100vh;
+      padding-top: 40px;
+      overflow: hidden;
+    }
+
+    .flip-card {
+      perspective: 1000px;
+      width: 360px;
+      max-width: 90vw;
+    }
+
+    .card-inner {
+      width: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .flip-card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .login-box, .register-box {
+      position: absolute;
+      width: 100%;
+      backface-visibility: hidden;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 40px 30px;
+      border-radius: 20px;
+      text-align: center;
+      color: white;
+      top: 0;
+      left: 0;
+      transform: scale(1);
+      transition: transform 0.6s ease;
+    }
+
+    .zoom-in {
+      animation: zoomIn 0.5s ease forwards;
+    }
+
+    @keyframes zoomIn {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.08);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .register-box {
+      transform: rotateY(180deg);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 25px;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    input::placeholder {
+      color: #ddd;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      cursor: pointer;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(to right, #ffffff, #bbbbbb);
+      font-weight: bold;
+      margin-top: 15px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    a {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #ffffff;
+      text-decoration: none;
+    }
+
+    @media (max-height: 600px) {
+      body {
+        padding-top: 10px;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="flip-card" id="flipCard">
+  <div class="card-inner">
+
+    <!-- Login Form -->
+    <div class="login-box" id="loginBox">
+      <h2>Login</h2>
+      <input type="text" id="loginUser" placeholder="Username" />
+      <div class="password-container">
+        <input type="password" id="loginPass" placeholder="Password" />
+        <i class="fa-regular fa-eye toggle-password" onclick="toggleVisibility('loginPass', this)"></i>
+      </div>
+      <button onclick="handleLogin()">Login</button>
+      <a href="#" onclick="flipToRegister()">Belum punya akun? Daftar</a>
+    </div>
+
+    <!-- Register Form -->
+    <div class="register-box">
+      <h2>Register</h2>
+      <input type="text" id="regNama" placeholder="Nama Lengkap" />
+      <input type="text" id="regUser" placeholder="Username" />
+      <input type="email" id="regEmail" placeholder="Email" />
+      <input type="tel" id="regTelp" placeholder="Nomor Telepon" />
+      <div class="password-container">
+        <input type="password" id="regPass" placeholder="Password" />
+        <i class="fa-regular fa-eye toggle-password" onclick="toggleVisibility('regPass', this)"></i>
+      </div>
+      <button onclick="handleRegister()">Daftar</button>
+      <a href="#" onclick="flipToLogin()">Sudah punya akun? Login</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const card = document.getElementById('flipCard');
+  const loginBox = document.getElementById('loginBox');
+
+  function flipToRegister() {
+    card.classList.add('flipped');
+  }
+
+  function flipToLogin() {
+    card.classList.remove('flipped');
+  }
+
+  function toggleVisibility(id, el) {
+    const input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+    el.classList.toggle('fa-eye-slash');
+  }
+
+  function handleRegister() {
+    const nama = document.getElementById('regNama').value.trim();
+    const user = document.getElementById('regUser').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const telp = document.getElementById('regTelp').value.trim();
+    const pass = document.getElementById('regPass').value;
+
+    if (!nama || !user || !email || !telp || !pass) {
+      alert("Harap isi semua kolom.");
+      return;
+    }
+
+    const userData = {
+      nama,
+      username: user,
+      email,
+      telp,
+      password: pass
+    };
+
+    localStorage.setItem("userData", JSON.stringify(userData));
+    alert("Registrasi berhasil. Silakan login.");
+    flipToLogin();
+  }
+
+  function handleLogin() {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    const stored = JSON.parse(localStorage.getItem("userData"));
+
+    if (stored && user === stored.username && pass === stored.password) {
+      // animasi zoom in
+      loginBox.classList.add("zoom-in");
+      setTimeout(() => {
+        window.location.href = "home.html";
+      }, 600);
+    } else {
+      alert("Username atau password salah!");
+    }
+  }
+</script>
+
+</body>
+</html>

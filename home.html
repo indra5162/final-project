@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-gradient-start: #763f93;
+      --primary-gradient-end: #9575cd;
+      --sidebar-color: linear-gradient(to right,#5b3e8b, #9f44d3);
+      --sidebar-width: 230px;
+      --header-height: 60px;
+      --card-bg: #d0d8dc;
+    }
+
+    body.dark-mode {
+      --card-bg: #2e2e2e;
+      background-color: #1c1c1c;
+      color: #fff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      background: #fff;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 1000;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 35px;
+      height: 35px;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .header-left i {
+      font-size: 1.2rem;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #searchInput {
+      display: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+    }
+
+    .sidebar-container {
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      height: calc(100% - var(--header-height));
+      width: var(--sidebar-width);
+      background: var(--sidebar-color);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      z-index: 998;
+    }
+
+    .sidebar-container.collapsed {
+      transform: translateX(-100%);
+    }
+
+    .sidebar-content nav a,
+    .settings {
+      display: block;
+      padding: 12px 25px;
+      color: #ffffff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .sidebar-content nav a:hover,
+    .sidebar-content nav a.active,
+    .settings:hover {
+      background: rgba(255,255,255,0.2);
+      border-radius: 0 20px 20px 0;
+      transform: scale(1.05);
+    }
+
+    .settings {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .main-wrapper {
+      margin-top: var(--header-height);
+      margin-left: var(--sidebar-width);
+      transition: margin-left 0.3s ease;
+      padding: 20px;
+    }
+
+    .main-wrapper.collapsed {
+      margin-left: 0;
+    }
+
+    .user-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      max-width: 600px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .user-icon {
+      width: 80px;
+      height: 80px;
+      background: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .user-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .user-icon i {
+      font-size: 2rem;
+      color: #333;
+    }
+
+    .user-info h3, .user-info p {
+      margin: 0;
+      text-align: left;
+    }
+
+    .button-group {
+      margin-top: 20px;
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: start;
+    }
+
+    .dashboard-box {
+      background: linear-gradient(145deg, #6f45b3, #9f44d3);
+      color: #fff;
+      border-radius: 15px;
+      padding: 20px 30px;
+      width: 180px;
+      height: 120px;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, filter 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .dashboard-box:hover {
+      transform: scale(1.08);
+      z-index: 1;
+    }
+
+    .dashboard-box i {
+      color: #fff;
+    }
+
+    .dashboard-box span {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .tilt-wrap {
+      perspective: 1000px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <div class="logo"><img src="logo.jpg.png" alt="Logo"></div>
+      <i class="fa-solid fa-bars" id="toggleSidebar"></i>
+      <input type="text" id="searchInput" placeholder="Cari...">
+      <i class="fa-solid fa-magnifying-glass" id="searchIcon"></i>
+    </div>
+    <div class="header-right">
+      <a href="Profil.html"><i class="fa-regular fa-user"></i></a>
+      <a href="login.html"><i class="fa-solid fa-right-from-bracket"></i></a>
+    </div>
+  </header>
+
+  <div class="sidebar-container expanded" id="sidebar">
+    <div class="sidebar-content">
+      <nav>
+        <a href="home.html" class="active"><i class="fa-solid fa-house"></i> Beranda</a>
+        <a href="Profil.html"><i class="fa-solid fa-user"></i> Profil</a>
+        <a href="laporan.html"><i class="fa-solid fa-pen"></i> Laporan</a>
+        <a href="penilaian.html"><i class="fa-solid fa-clipboard-check"></i> Penilaian</a>
+        <a href="notifikasi.html"><i class="fa-solid fa-bell"></i> Notifikasi</a>
+      </nav>
+      <div class="settings" onclick="location.href='setting.html'">
+        <i class="fa-solid fa-gear"></i> Pengaturan
+      </div>
+    </div>
+  </div>
+
+  <main class="main-wrapper" id="mainContent">
+    <section class="user-card">
+      <div class="user-icon" id="fotoHome">
+        <i class="fa-regular fa-user"></i>
+      </div>
+      <div class="user-info" id="userInfo">
+        <h3>Hallo</h3>
+      </div>
+    </section>
+
+    <div class="button-group">
+      <div class="tilt-wrap">
+        <a href="dashboard mahasiswa.html" class="dashboard-box tilt">
+          <i class="fa-regular fa-circle-check fa-2x"></i>
+          <span>Aproval</span>
+        </a>
+      </div>
+      <div class="tilt-wrap">
+        <a href="https://kai.sbuindustri.com/admin/dashboard" target="_blank" class="dashboard-box tilt">
+          <i class="fa-solid fa-building-columns fa-2x"></i>
+          <span>Dashboard Perusahaan</span>
+        </a>
+      </div>
+      <div class="tilt-wrap">
+        <a href="https://home.amikom.ac.id" target="_blank" class="dashboard-box tilt">
+          <i class="fa-solid fa-building fa-2x"></i>
+          <span>Dashboard Kampus</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.3/dist/vanilla-tilt.min.js"></script>
+  <script>
+    VanillaTilt.init(document.querySelectorAll(".tilt"), {
+      max: 15,
+      speed: 400,
+      glare: true,
+      "max-glare": 0.3
+    });
+
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const searchIcon = document.getElementById('searchIcon');
+    const searchInput = document.getElementById('searchInput');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      mainContent.classList.toggle('collapsed');
+    });
+
+    searchIcon.addEventListener('click', () => {
+      searchInput.style.display = (searchInput.style.display === 'none' || searchInput.style.display === '') ? 'inline-block' : 'none';
+      if (searchInput.style.display === 'inline-block') searchInput.focus();
+    });
+
+    searchInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        const keyword = this.value.toLowerCase();
+        const contentText = mainContent.innerText.toLowerCase();
+        alert(contentText.includes(keyword)
+          ? `Kata "${this.value}" ditemukan di halaman!`
+          : `Kata "${this.value}" tidak ditemukan.`);
+      }
+    });
+
+    const boxes = document.querySelectorAll(".dashboard-box");
+    boxes.forEach(box => {
+      box.addEventListener("mouseenter", () => {
+        boxes.forEach(other => {
+          if (other !== box) other.style.filter = "blur(3px)";
+        });
+      });
+
+      box.addEventListener("mouseleave", () => {
+        boxes.forEach(other => {
+          other.style.filter = "none";
+        });
+      });
+    });
+     
+    window.addEventListener("DOMContentLoaded", () => {
+      const fotoHome = document.getElementById("fotoHome");
+      const savedFoto = localStorage.getItem("fotoMahasiswa");
+      if (savedFoto) {
+        fotoHome.innerHTML = `<img src="${savedFoto}" alt="Foto Profil">`;
+      }
+
+      const nama = localStorage.getItem("nama") || "";
+      const nim = localStorage.getItem("nim") || "";
+      const userInfo = document.getElementById("userInfo");
+
+      const jam = new Date().getHours();
+      let greet = "Selamat pagi";
+      if (jam >= 12 && jam < 15) greet = "Selamat siang";
+      else if (jam >= 15 && jam < 18) greet = "Selamat sore";
+      else if (jam >= 18 || jam < 4) greet = "Selamat malam";
+
+      if (nama && nim) {
+        userInfo.innerHTML = `<h3>Hallo, ${nama}</h3><p>${nim}</p>`;
+      } else {
+        userInfo.innerHTML = `<h3>Hallo, ${greet}</h3>`;
+      }
+
+      if (localStorage.getItem("dark") === "on") {
+        document.body.classList.add("dark-mode");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manajemen Local Storage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: linear-gradient(to right, #8e44ad, #9575cd);
+      color: #fff;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .storage-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .storage-table th, .storage-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      color: #000;
+    }
+
+    .storage-table th {
+      background-color: #f0f0f0;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+      color: #fff;
+    }
+
+    .clear-btn {
+      background-color: #2c3e50;
+      color: #fff;
+    }
+
+    .refresh-btn {
+      background-color: #27ae60;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📦 Data Local Storage</h1>
+
+  <table class="storage-table" id="storageTable">
+    <thead>
+      <tr>
+        <th>Kunci</th>
+        <th>Isi (Value)</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="storageBody">
+      <!-- Data akan diisi oleh JavaScript -->
+    </tbody>
+  </table>
+
+  <button class="btn clear-btn" onclick="clearAllStorage()">🧹 Hapus Semua</button>
+  <button class="btn refresh-btn" onclick="loadStorage()">🔄 Refresh</button>
+
+  <script>
+    function loadStorage() {
+      const tbody = document.getElementById("storageBody");
+      tbody.innerHTML = ""; // reset isi dulu
+
+      if (localStorage.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="3" style="text-align:center; color:white;">Tidak ada data tersimpan</td>`;
+        tbody.appendChild(row);
+        return;
+      }
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${key}</td>
+          <td style="word-break: break-all">${value}</td>
+          <td>
+            <button class="btn delete-btn" onclick="deleteKey('${key}')">Hapus</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      }
+    }
+
+    function deleteKey(key) {
+      if (confirm(`Yakin ingin menghapus data "${key}"?`)) {
+        localStorage.removeItem(key);
+        loadStorage();
+      }
+    }
+
+    function clearAllStorage() {
+      if (confirm("Yakin ingin menghapus semua data di localStorage?")) {
+        localStorage.clear();
+        loadStorage();
+      }
+    }
+
+    // Jalankan saat halaman dibuka
+    window.onload = loadStorage;
+  </script>
+
+</body>
+</html>

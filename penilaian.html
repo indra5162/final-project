@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Penilaian</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary-gradient-start: #763f93;
+      --primary-gradient-end: #9575cd;
+      --sidebar-color: linear-gradient(to right,#5b3e8b, #9f44d3);
+      --sidebar-width: 230px;
+      --header-height: 60px;
+      --card-bg: #f2f2f2;
+      --button-bg: #6b7479;
+      --background: #ffffff;
+      --text: #000000;
+    }
+
+    body.dark-mode {
+      --background: #1c1c1c;
+      --text: #ffffff;
+      --card-bg: #2e2e2e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--background);
+      color: var(--text);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 1000;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 35px;
+      height: 35px;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .header-left i {
+      font-size: 1.2rem;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #searchInput {
+      display: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+    }
+
+    .sidebar-container {
+      position: fixed;
+      top: var(--header-height);
+      left: 0;
+      height: calc(100% - var(--header-height));
+      width: var(--sidebar-width);
+      background: var(--sidebar-color);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      z-index: 998;
+    }
+
+    .sidebar-container.collapsed {
+      transform: translateX(-100%);
+    }
+
+    .sidebar-content nav a,
+    .settings {
+      display: block;
+      padding: 12px 25px;
+      color: #ffffff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-content nav a:hover,
+    .sidebar-content nav a.active {
+      background-color: rgba(255,255,255,0.2);
+      transform: scale(1.07);
+      border-radius: 0 20px 20px 0;
+    }
+
+    .settings {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .main-wrapper {
+      margin-top: var(--header-height);
+      margin-left: var(--sidebar-width);
+      transition: margin-left 0.3s ease;
+      padding: 20px;
+    }
+
+    .main-wrapper.collapsed {
+      margin-left: 0;
+    }
+
+    .grade-section {
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .grade-section h2 {
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+    }
+
+    .grade-section .identity {
+      margin-bottom: 20px;
+    }
+
+    .grade-section .identity p {
+      display: flex;
+      gap: 10px;
+      margin: 4px 0;
+    }
+
+    .grade-section .identity p strong {
+      width: 160px;
+      display: inline-block;
+    }
+
+    .grade-section table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: var(--background);
+      color: var(--text);
+    }
+
+    .grade-section th, .grade-section td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ccc;
+    }
+
+    .download-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: var(--button-bg);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <div class="logo"><img src="logo.jpg.png" alt="Logo"></div>
+      <i class="fa-solid fa-bars" id="toggleSidebar"></i>
+      <input type="text" id="searchInput" placeholder="Cari...">
+      <i class="fa-solid fa-magnifying-glass" id="searchIcon"></i>
+    </div>
+    <div class="header-right">
+      <a href="profil.html"><i class="fa-regular fa-user"></i></a>
+      <a href="login.html"><i class="fa-solid fa-right-from-bracket"></i></a>
+    </div>
+  </header>
+
+  <div class="sidebar-container expanded" id="sidebar">
+    <div class="sidebar-content">
+      <nav>
+        <a href="home.html"><i class="fa-solid fa-house"></i> <span data-key="nav_home">Beranda</span></a>
+        <a href="profil.html"><i class="fa-solid fa-user"></i> <span data-key="nav_profile">Profil</span></a>
+        <a href="laporan.html"><i class="fa-solid fa-pen"></i> <span data-key="nav_report">Laporan</span></a>
+        <a href="penilaian.html" class="active"><i class="fa-solid fa-clipboard-check"></i> <span data-key="nav_score">Penilaian</span></a>
+        <a href="notifikasi.html"><i class="fa-solid fa-bell"></i> <span data-key="nav_notif">Notifikasi</span></a>
+      </nav>
+      <div class="settings" onclick="location.href='setting.html'">
+        <i class="fa-solid fa-gear"></i><span data-key="nav_setting">Pengaturan</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-wrapper" id="mainContent">
+    <div class="grade-section">
+      <h2 data-key="title">Nilai Akhir Magang</h2>
+      <div class="identity">
+        <p><strong data-key="name">Nama</strong>: <span id="nama">..............</span></p>
+        <p><strong data-key="nim">NIM</strong>: <span id="nim">..............</span></p>
+        <p><strong data-key="company">Perusahaan</strong>: <span id="perusahaan">..............</span></p>
+        <p><strong data-key="periode">Periode Magang</strong>: <span id="periode">..............</span></p>
+        <p><strong data-key="mentor">Pembimbing</strong>: <span id="pembimbing">..............</span></p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th data-key="komponen">Komponen</th>
+            <th>Bobot (%)</th>
+            <th data-key="nilai">Nilai</th>
+            <th>Bobot x Nilai</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Hard Skills</td><td>40</td><td>85</td><td>34.0</td></tr>
+          <tr><td>Soft Skills</td><td>30</td><td>90</td><td>27.0</td></tr>
+          <tr><td>Laporan Magang</td><td>30</td><td>88</td><td>26.4</td></tr>
+          <tr><td><strong>Total Nilai Akhir</strong></td><td colspan="3"><strong>87.4</strong></td></tr>
+        </tbody>
+      </table>
+      <a href="E-Sertifikat Indra Ardiansyah.pdf" download class="download-btn" data-key="download">Download Sertifikat</a>
+    </div>
+  </main>
+
+  <script>
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const searchIcon = document.getElementById('searchIcon');
+    const searchInput = document.getElementById('searchInput');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      mainContent.classList.toggle('collapsed');
+    });
+
+    searchIcon.addEventListener('click', () => {
+      searchInput.style.display = (searchInput.style.display === 'none' || searchInput.style.display === '') ? 'inline-block' : 'none';
+      searchInput.focus();
+    });
+
+    searchInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        const keyword = this.value.toLowerCase();
+        const contentText = mainContent.innerText.toLowerCase();
+        alert(contentText.includes(keyword) ? `Kata "${this.value}" ditemukan!` : `Kata "${this.value}" tidak ditemukan.`);
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const keys = ["nama", "nim", "perusahaan", "periode", "pembimbing"];
+      keys.forEach(key => {
+        document.getElementById(key).textContent = localStorage.getItem(key) || "..............";
+      });
+
+      if (localStorage.getItem("dark") === "on") {
+        document.body.classList.add("dark-mode");
+      }
+
+      const lang = localStorage.getItem("lang") || "id";
+      const i18n = {
+        id: {
+          title: "Nilai Akhir Magang",
+          name: "Nama",
+          nim: "NIM",
+          company: "Perusahaan",
+          periode: "Periode Magang",
+          mentor: "Pembimbing",
+          nilai: "Nilai",
+          komponen: "Komponen",
+          download: "Download Sertifikat",
+          nav_home: "Beranda",
+          nav_profile: "Profil",
+          nav_report: "Laporan",
+          nav_score: "Penilaian",
+          nav_notif: "Notifikasi",
+          nav_setting: "Pengaturan"
+        },
+        en: {
+          title: "Final Internship Grade",
+          name: "Name",
+          nim: "Student ID",
+          company: "Company",
+          periode: "Internship Period",
+          mentor: "Supervisor",
+          nilai: "Score",
+          komponen: "Component",
+          download: "Download Certificate",
+          nav_home: "Home",
+          nav_profile: "Profile",
+          nav_report: "Report",
+          nav_score: "Evaluation",
+          nav_notif: "Notification",
+          nav_setting: "Settings"
+        }
+      };
+
+      document.querySelectorAll("[data-key]").forEach(el => {
+        const key = el.getAttribute("data-key");
+        if (i18n[lang][key]) {
+          el.textContent = i18n[lang][key];
+        }
+      });
+    });
+  </script>
+</body>
+</html>
